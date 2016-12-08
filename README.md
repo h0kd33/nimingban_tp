@@ -1,8 +1,8 @@
 # ThinkPHP仿A岛匿名版
 
-------
-
 ThinkPHP框架练手作，Api完全与A岛官方一致（参照[Api.md](https://github.com/wsdzl/nimingban_tp/blob/master/API.md)）
+
+------
 
 Api接口已全部完成（修改一下A岛开源app的服务器和图片cdn应该可以正常使用）
 
