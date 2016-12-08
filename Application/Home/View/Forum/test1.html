@@ -1,0 +1,11 @@
+<form action="__ROOT__/Home/Forum/doPostThread.html" method="post" enctype="multipart/form-data">
+	<input type="hidden" name="fid" value="1">
+	名称<input type="text" name="name" size="28" maxlength="15">
+	<input type="checkbox" name="isManager" value="true">管理员<br>
+	E-mail<input type="text" name="email" size="28" maxlength="30"><br>
+	标题<input type="text" name="title" size="28" maxlength="40">
+	<input type="submit" value="送出"><br>
+	正文<textarea name="content" maxlength="10000" class="h-post-form-textarea"></textarea><br>
+	附加图片<input type="checkbox" name="water" value="true" checked="true">水印
+	<input type="file" name="image">
+</form>
