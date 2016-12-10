@@ -67,7 +67,7 @@ class ThreadModel extends Model{
 		$this->_userid = $userid;
 		return true;
 	}
-	public function isBaned(){
+	protected function isBaned(){
 		$model = M('Banid');
 		$map = array('id' => $this->_userid);
 		if ($model->where($map)->getField('count(*)')) return false;
@@ -93,20 +93,22 @@ class ThreadModel extends Model{
 	protected function imgHandle($water){
 		if (empty($_FILES['image']['size'])) return true;
 		$tmp = $_FILES['image']['tmp_name'];
-		$imgInfo = \Common\Common\ImageTool::imageInfo($tmp);
-		if (!$imgInfo) return false;
+		$image = new \Think\Image();
+		$image->open($tmp);
+		$ext = $image->mime();
+		$ext = substr($ext,strpos($ext,'/')+1);
 		$path = dirname(THINK_PATH).'/Public/image/';
 		$waterImg = $path.'water.png';
 		if ($water) {
-			\Common\Common\ImageTool::water($tmp,$waterImg,$tmp);
+			$image->water($waterImg,9,100)->save($tmp);
 		}
 		$time = time();
 		$dir = date('Y-m-d', $time);
 		is_dir($path.$dir)||mkdir($path.$dir);
 		$filename = $dir.'/'.md5($time.mt_rand());
 		$this->_uploadImg['img'] = $filename;
-		$this->_uploadImg['ext'] = '.'.$imgInfo['ext'];
-		move_uploaded_file($tmp,$path.$filename.'.'.$imgInfo['ext']);
+		$this->_uploadImg['ext'] = '.'.$ext;
+		move_uploaded_file($tmp,$path.$filename.'.'.$ext);
 		return true;
 	}
 	protected function isEmpty($content){

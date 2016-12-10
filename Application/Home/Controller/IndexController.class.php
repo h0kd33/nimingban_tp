@@ -15,7 +15,7 @@ class IndexController extends Controller {
 		if (!file_exists($img)) exit('404');
 		if (!$imgInfo=getimagesize($img)) exit('404');
 		if (!$fp=fopen($img,'rb')) exit('404');
-		header("Content-type: {$imgInfo['mime']}");
+		header('Content-type: '.$imgInfo['mime']);
 		fpassthru($fp);
 	}
 	public function thumb($img){
@@ -24,28 +24,22 @@ class IndexController extends Controller {
 		$thumb = $public.'thumb/'.$img.'.'.__EXT__;
 		if (!file_exists($thumb)) {
 			if (!file_exists($image)) exit('404');
-			$imgInfo = \Common\Common\ImageTool::imageInfo($image);
-			if (!$imgInfo) exit('404');
+			$image_ = new \Think\Image();
+			$image_->open($image);
+			$imgInfo[0] = $image_->width();
+			$imgInfo[1] = $image_->height();
+			$imgInfo['mime'] = $image_->mime();
 			$thumb_dir = dirname($thumb);
 			if (!is_dir($thumb_dir)) mkdir($thumb_dir);
-			if ($imgInfo['width']>250||$imgInfo['height']>250) {
-				if ($imgInfo['width']>$imgInfo['height']) {
-					$width = 250;
-					$height = 250/$imgInfo['width']*$imgInfo['height'];
-				} else {
-					$height = 250;
-					$width = 250/$imgInfo['height']*$imgInfo['width'];
-				}
-				if (!\Common\Common\ImageTool::thumb($image,$thumb,$width,$height)) {
-					exit('404');
-				}
+			if ($imgInfo[0]>250||$imgInfo[1]>250) {
+				$image_->thumb(250, 250)->save($thumb);
 			} else {
 				copy($image,$thumb);
 			}
 		}
 		if (!isset($imgInfo)) $imgInfo=getimagesize($thumb);
 		if (!$fp=fopen($thumb,'rb')) exit('404');
-		header("Content-type: {$imgInfo['mime']}");
+		header('Content-type: '.$imgInfo['mime']);
 		fpassthru($fp);
 	}
 }
